@@ -1,5 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
-import { ArtistService } from '../core/services/Artist.service';
+import { ArtistService } from '../../core/services/Artist.service';
 
 @Controller()
 export class ArtistController {
