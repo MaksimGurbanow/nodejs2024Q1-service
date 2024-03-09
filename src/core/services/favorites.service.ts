@@ -5,7 +5,7 @@ import { FavoritesRepository } from '../repositories/favorites/FavoritesReposito
 export class FavoritesService {
   constructor(private readonly favoritesRepository: FavoritesRepository) {}
 
-  add() {
-    this.favoritesRepository.add();
+  getAll() {
+    this.favoritesRepository.getAll();
   }
 }

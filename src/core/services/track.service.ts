@@ -5,7 +5,7 @@ import { TrackRepository } from '../repositories/track/TrackRepository';
 export class TrackService {
   constructor(private readonly trackRepository: TrackRepository) {}
 
-  add() {
-    this.trackRepository.add();
+  getAll() {
+    this.trackRepository.getAll();
   }
 }

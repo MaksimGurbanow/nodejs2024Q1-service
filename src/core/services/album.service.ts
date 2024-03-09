@@ -5,7 +5,7 @@ import { AlbumRepository } from '../repositories/album/AlbumRepository';
 export class AlbumService {
   constructor(private readonly albumRepository: AlbumRepository) {}
 
-  add() {
-    this.albumRepository.add();
+  getAll() {
+    this.albumRepository.getAll();
   }
 }

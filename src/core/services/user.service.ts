@@ -5,7 +5,7 @@ import { Injectable } from '@nestjs/common';
 export class UserService {
   constructor(private readonly userRepository: UserRepository) {}
 
-  add() {
-    this.userRepository.add();
+  getAll() {
+    this.userRepository.getAll();
   }
 }

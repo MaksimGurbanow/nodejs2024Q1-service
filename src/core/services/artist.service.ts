@@ -5,7 +5,7 @@ import { ArtistRepository } from '../repositories/artist/ArtistRepository';
 export class ArtistService {
   constructor(private readonly artistRepository: ArtistRepository) {}
 
-  add() {
-    this.artistRepository.add();
+  getAll() {
+    this.artistRepository.getAll();
   }
 }
