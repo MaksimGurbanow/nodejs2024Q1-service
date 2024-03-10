@@ -1,4 +1,4 @@
-import { Artist } from 'src/core/models/interface';
+import { Artist } from './interface/artist.interface';
 import { CreateArtistDto, UpdateArtistDto } from './dto/interface';
 
 export interface ArtistRepository {

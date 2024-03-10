@@ -1,4 +1,4 @@
-import { Track } from 'src/core/models/interface';
+import { Track } from './interface/track.interface';
 import { CreateTrackDto, UpdateTrackInfoDto } from './dto/interface';
 
 export interface TrackRepository {

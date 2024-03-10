@@ -1,4 +1,4 @@
-import { Album } from 'src/core/models/interface';
+import { Album } from './interface/album.interface';
 import { CreateAlbumDto, UpdateAlbumDto } from './dto/interface';
 
 export interface AlbumRepository {
