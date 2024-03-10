@@ -1,7 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
 import { AlbumService } from '../../core/services/Album.service';
 
-@Controller()
+@Controller('/album')
 export class AlbumController {
   constructor(private readonly albumService: AlbumService) {}
 

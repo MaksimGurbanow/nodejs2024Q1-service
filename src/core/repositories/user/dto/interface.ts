@@ -4,6 +4,6 @@ export interface CreateUserDto {
 }
 
 export interface UpdatePasswordDto {
-  oldPassword: string;
-  newPassword: string;
+  oldPassword: string; // previous password
+  newPassword: string; // new password
 }
