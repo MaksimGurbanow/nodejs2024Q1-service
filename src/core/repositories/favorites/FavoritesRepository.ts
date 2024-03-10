@@ -1,4 +1,4 @@
-import { Favorites } from './interface/favorites.interface';
+import { Favorites } from '../../interfaces/favorites.interface';
 
 export interface FavoritesRepository {
   getAll(): Favorites[];

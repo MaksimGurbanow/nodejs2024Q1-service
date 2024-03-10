@@ -1,4 +1,4 @@
-import { Album } from './interface/album.interface';
+import { Album } from '../../interfaces/album.interface';
 import { CreateAlbumDto, UpdateAlbumDto } from './dto/interface';
 
 export interface AlbumRepository {

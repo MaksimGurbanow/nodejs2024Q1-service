@@ -1,4 +1,4 @@
-import { User } from './interface/user.interface';
+import { User } from '../../interfaces/user.interface';
 import { CreateUserDto, UpdatePasswordDto } from './dto/interface';
 
 export interface UserRepository {

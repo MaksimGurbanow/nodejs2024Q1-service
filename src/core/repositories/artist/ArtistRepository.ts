@@ -1,4 +1,4 @@
-import { Artist } from './interface/artist.interface';
+import { Artist } from '../../interfaces/artist.interface';
 import { CreateArtistDto, UpdateArtistDto } from './dto/interface';
 
 export interface ArtistRepository {
