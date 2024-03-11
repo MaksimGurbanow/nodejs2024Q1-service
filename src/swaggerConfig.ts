@@ -6,7 +6,7 @@ import { parse } from 'yamljs';
 import 'dotenv/config';
 
 const loadConfig = async () => {
-  const path = resolve(__dirname, '../dic/api.yaml');
+  const path = resolve(__dirname, '../doc/api.yaml');
   const Content = await readFile(path, 'utf-8');
   return parse(Content);
 };
