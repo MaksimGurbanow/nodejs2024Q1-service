@@ -1,10 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { UserRepository } from '../repositories/user/UserRepository';
+import { DbService } from 'src/infrasctructure/db/db.service';
+import { UserRepository } from '../repositories/user/user.repository';
 @Injectable()
-export class UserService {
-  constructor(private readonly userRepository: UserRepository) {}
+export class UserService implements UserRepository {
+  constructor(private readonly DB: DbService) {}
 
-  getAll() {
-    this.userRepository.getAll();
-  }
 }

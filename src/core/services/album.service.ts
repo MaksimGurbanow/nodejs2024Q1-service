@@ -1,11 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { AlbumRepository } from '../repositories/album/AlbumRepository';
+import { AlbumRepository } from '../repositories/album/album.repository';
+import { DbService } from 'src/infrasctructure/db/db.service';
 
 @Injectable()
-export class AlbumService {
-  constructor(private readonly albumRepository: AlbumRepository) {}
-
-  getAll() {
-    this.albumRepository.getAll();
-  }
+export class AlbumService implements AlbumRepository{
+  constructor(private readonly DB: DbService) {}
 }

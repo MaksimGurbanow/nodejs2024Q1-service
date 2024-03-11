@@ -1,11 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { TrackRepository } from '../repositories/track/TrackRepository';
+import { TrackRepository } from '../repositories/track/track.repository';
+import { DbService } from 'src/infrasctructure/db/db.service';
 
 @Injectable()
-export class TrackService {
-  constructor(private readonly trackRepository: TrackRepository) {}
-
-  getAll() {
-    this.trackRepository.getAll();
-  }
+export class TrackService implements TrackRepository {
+  constructor(private readonly DB: DbService) {}
 }

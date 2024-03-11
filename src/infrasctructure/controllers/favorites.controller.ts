@@ -1,5 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
-import { FavoritesService } from '../../core/services/Favorites.service';
+import { FavoritesService } from 'src/core/services/favorites.service';
 
 @Controller('/favorites')
 export class FavoritesController {
