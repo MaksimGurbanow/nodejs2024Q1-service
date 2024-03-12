@@ -13,7 +13,7 @@
 
 ## 📦 How to install Home Library Service
 
-- You should be in **[Part_1](https://github.com/MaksimGurbanow/nodejs2024Q1-service/tree/dev)** branch.
+- You should be in **[Dev](https://github.com/MaksimGurbanow/nodejs2024Q1-service/tree/dev)** branch.
 
 You can clone this repository:
 
