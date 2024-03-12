@@ -1,5 +1,9 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { FavoritesRepository } from '../repositories/favorites/favorites.repository';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { DbService } from 'src/infrasctructure/db/db.service';
 import { Album } from '../interfaces/album.interface';
 import { Artist } from '../interfaces/artist.interface';
@@ -14,23 +18,8 @@ enum FavoriteType {
 export type Entity = Artist | Album | Track | null;
 
 @Injectable()
-export class FavoritesService implements FavoritesRepository {
-  constructor(private readonly DB: DbService) {}
-
-  getAll() {
-    const filterExistingEntities = (entities, favorites) =>
-      favorites.map((id) => entities.find((e) => e.id === id)).filter((e) => e);
-
-    return {
-      artists: filterExistingEntities(
-        this.DB.artists,
-        this.DB.favorites.artists,
-      ),
-      albums: filterExistingEntities(this.DB.albums, this.DB.favorites.albums),
-      tracks: filterExistingEntities(this.DB.tracks, this.DB.favorites.tracks),
-    };
-  }
-
+export class FavoritesService {
+  constructor(private db: DbService) {}
   async create(id: string, type: string) {
     let entity: Entity = null;
 
@@ -38,7 +27,7 @@ export class FavoritesService implements FavoritesRepository {
       case 'artist':
       case 'album':
       case 'track':
-        entity = this.DB[type + 's'].find((item: Entity) => item.id === id);
+        entity = this.db[type + 's'].find((item: Entity) => item.id === id);
 
         if (!entity) {
           throw new HttpException(
@@ -47,14 +36,14 @@ export class FavoritesService implements FavoritesRepository {
           );
         }
 
-        const alreadyInFavorites = this.DB.favorites[type + 's'].some(
+        const alreadyInFavorites = this.db.favorites[type + 's'].some(
           (favoriteItem: Entity) => favoriteItem.id === id,
         );
         if (alreadyInFavorites) {
           throw new Error(`${type} with ID ${id} is already in favorites`);
         }
 
-        this.DB.favorites[type + 's'].push(id);
+        this.db.favorites[type + 's'].push(id);
         break;
 
       default:
@@ -62,6 +51,38 @@ export class FavoritesService implements FavoritesRepository {
     }
 
     return entity;
+  }
+
+  getAll() {
+    const filterExistingEntities = (entities, favorites) =>
+      favorites.map((id) => entities.find((e) => e.id === id)).filter((e) => e);
+
+    return {
+      artists: filterExistingEntities(
+        this.db.artists,
+        this.db.favorites.artists,
+      ),
+      albums: filterExistingEntities(this.db.albums, this.db.favorites.albums),
+      tracks: filterExistingEntities(this.db.tracks, this.db.favorites.tracks),
+    };
+  }
+
+  remove(id: string, type: string) {
+    const favoriteType = this.getFavoriteType(type);
+    if (!favoriteType) {
+      throw new NotFoundException(`Type ${type} is not valid`);
+    }
+
+    const index = this.db.favorites[favoriteType].indexOf(id);
+    if (index === -1) {
+      throw new NotFoundException(
+        `${
+          type.charAt(0).toUpperCase() + type.slice(1)
+        } with ID ${id} not found in favorites`,
+      );
+    }
+
+    this.db.favorites[favoriteType].splice(index, 1);
   }
 
   private getFavoriteType(type: string): FavoriteType | undefined {
@@ -75,26 +96,5 @@ export class FavoritesService implements FavoritesRepository {
       default:
         return undefined;
     }
-  }
-
-  remove(id: string, type: string) {
-    const favoriteType = this.getFavoriteType(type);
-    if (!favoriteType) {
-      throw new HttpException(
-        `Type ${type} is not valid`,
-        HttpStatus.NOT_FOUND,
-      );
-    }
-    const index = this.DB.favorites[favoriteType].indexOf(id);
-    if (index === -1) {
-      throw new HttpException(
-        `${
-          type.charAt(0).toUpperCase() + type.slice(1)
-        } with ID ${id} not found in favorites`,
-        HttpStatus.NOT_FOUND,
-      );
-    }
-
-    this.DB.favorites[favoriteType].splice(index, 1);
   }
 }
