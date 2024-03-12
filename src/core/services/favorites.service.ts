@@ -17,7 +17,7 @@ export type Entity = Artist | Album | Track | null;
 export class FavoritesService implements FavoritesRepository {
   constructor(private readonly DB: DbService) {}
 
-  async getAll() {
+  getAll() {
     const filterExistingEntities = (entities, favorites) =>
       favorites.map((id) => entities.find((e) => e.id === id)).filter((e) => e);
 
@@ -77,7 +77,7 @@ export class FavoritesService implements FavoritesRepository {
     }
   }
 
-  async remove(id: string, type: string) {
+  remove(id: string, type: string) {
     const favoriteType = this.getFavoriteType(type);
     if (!favoriteType) {
       throw new HttpException(
