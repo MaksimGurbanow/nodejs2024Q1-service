@@ -1,6 +1,7 @@
 import { Exclude } from 'class-transformer';
 import { User } from '../interfaces/user.interface';
 import { v4 as uuid4 } from 'uuid';
+import { User as PrismaUser } from '@prisma/client';
 
 export class UserEntity implements User {
   id: string;
@@ -12,12 +13,12 @@ export class UserEntity implements User {
   @Exclude()
   password: string;
 
-  constructor({ login, password }: Partial<UserEntity>) {
-    this.id = uuid4();
-    this.login = login;
-    this.version = 1;
-    this.createdAt = Date.now();
-    this.updatedAt = Date.now();
-    this.password = password;
+  constructor(user: Partial<PrismaUser>) {
+    this.id = user.id;
+    this.login = user.login;
+    this.version = user.version;
+    this.createdAt = new Date(user.createdAt).getTime();
+    this.updatedAt = new Date(user.updatedAt).getTime();
+    this.password = user.password;
   }
 }

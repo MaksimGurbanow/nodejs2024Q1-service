@@ -1,102 +1,62 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { TrackRepository } from '../repositories/track/track.repository';
-import { DbEntities, DbService } from 'src/infrasctructure/db/db.service';
-import { TrackEntity } from '../entities/track.entity';
-import { Track } from '../interfaces/track.interface';
 import {
   CreateTrackDto,
   UpdateTrackDto,
 } from '../repositories/track/dto/interface';
+import { PrismaService } from './prisma.service';
+import { Prisma } from '.prisma/client/default';
 
 @Injectable()
 export class TrackService implements TrackRepository {
-  constructor(private readonly DB: DbService) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   async getAll() {
-    return this.DB.tracks;
+    return await this.prisma.track.findMany();
   }
 
   async getById(id: string) {
-    const oneTrack: Track | undefined = this.DB.tracks.find(
-      (Track) => Track.id === id,
-    );
-
-    if (!oneTrack) {
-      throw new HttpException(
-        `Track with id ${id} not found`,
-        HttpStatus.NOT_FOUND,
-      );
+    const currentTrack = await this.prisma.track.findUnique({
+      where: { id },
+    });
+    if (!currentTrack) {
+      throw new NotFoundException(`Track with id ${id} not found`);
     }
-
-    return oneTrack;
-  }
-
-  async create(createTrackDto: CreateTrackDto) {
-    const conditionArtist = this.DB.verifyEntityPresence(
-      createTrackDto.artistId,
-      DbEntities.ARTISTS,
-    );
-    const conditionAlbum = this.DB.verifyEntityPresence(
-      createTrackDto.albumId,
-      DbEntities.ALBUMS,
-    );
-    if (conditionArtist && createTrackDto.artistId) {
-      throw new HttpException(
-        `Artist with ID ${createTrackDto.artistId} not found`,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
-    if (conditionAlbum && createTrackDto.albumId) {
-      throw new HttpException(
-        `Album with ID ${createTrackDto.albumId} not found`,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
-    const newTrack = new TrackEntity(createTrackDto);
-
-    this.DB.tracks.push(newTrack);
-    return newTrack;
-  }
-
-  async update(id: string, updateTrackDto: UpdateTrackDto) {
-    const currentTrack = await this.getById(id);
-    const conditionArtist = this.DB.verifyEntityPresence(
-      updateTrackDto.artistId,
-      DbEntities.ARTISTS,
-    );
-    const conditionAlbum = this.DB.verifyEntityPresence(
-      updateTrackDto.albumId,
-      DbEntities.ALBUMS,
-    );
-    if (conditionArtist && updateTrackDto.artistId) {
-      throw new HttpException(
-        `Artist with ID ${updateTrackDto.artistId} not found`,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
-    if (conditionAlbum && updateTrackDto.albumId) {
-      throw new HttpException(
-        `Album with ID ${updateTrackDto.albumId} not found`,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
-    currentTrack.albumId = updateTrackDto.albumId;
-    currentTrack.artistId = updateTrackDto.artistId;
-    currentTrack.duration = updateTrackDto.duration;
-    currentTrack.name = updateTrackDto.name;
-
     return currentTrack;
   }
 
+  async create(createTrackDto: CreateTrackDto) {
+    return await this.prisma.track.create({ data: createTrackDto });
+  }
+
+  async update(id: string, updateTrackDto: UpdateTrackDto) {
+    try {
+      return await this.prisma.track.update({
+        where: { id },
+        data: updateTrackDto,
+      });
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2025'
+      ) {
+        throw new NotFoundException(`Track with id ${id} not found`);
+      }
+      throw error;
+    }
+  }
+
   async remove(id: string) {
-    const TrackToDelete = await this.getById(id);
-    const index = this.DB.tracks.findIndex((u) => u.id === TrackToDelete.id);
-    if (index !== -1) {
-      this.DB.tracks.splice(index, 1);
+    try {
+      return await this.prisma.track.delete({ where: { id } });
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2025'
+      ) {
+        throw new NotFoundException(`Track with id ${id} not found`);
+      }
+      throw error;
     }
   }
 }

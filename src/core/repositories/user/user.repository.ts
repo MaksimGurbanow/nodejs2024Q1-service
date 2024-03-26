@@ -6,5 +6,5 @@ export interface UserRepository {
   getById(id: string): Promise<User>;
   create(dto: CreateUserDto): Promise<User>;
   update(id: string, dto: UpdatePasswordDto): Promise<User>;
-  remove(id: string): Promise<void>;
+  remove(id: string): Promise<User>;
 }

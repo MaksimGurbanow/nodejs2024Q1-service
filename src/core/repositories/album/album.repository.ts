@@ -6,5 +6,5 @@ export interface AlbumRepository {
   getById(id: string): Promise<Album>;
   create(dto: CreateAlbumDto): Promise<Album>;
   update(id: string, dto: UpdateAlbumDto): Promise<Album>;
-  remove(id: string): Promise<void>;
+  remove(id: string): Promise<Album>;
 }

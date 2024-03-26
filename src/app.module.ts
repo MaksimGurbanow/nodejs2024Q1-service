@@ -4,16 +4,16 @@ import { AlbumModule } from './modules/album.module';
 import { ArtistModule } from './modules/artist.module';
 import { FavoritesModule } from './modules/favorites.module';
 import { TrackModule } from './modules/track.module';
-// import { DbModule } from './modules/db.module';
+import { PrismaModule } from './modules/prisma.module';
 
 @Module({
   imports: [
     UserModule,
     AlbumModule,
     ArtistModule,
-    // DbModule,
     FavoritesModule,
     TrackModule,
+    PrismaModule,
   ],
 })
 export class AppModule {}

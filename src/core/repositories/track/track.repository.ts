@@ -6,5 +6,5 @@ export interface TrackRepository {
   getById(id: string): Promise<Track>;
   create(dto: CreateTrackDto): Promise<Track>;
   update(id: string, dto: UpdateTrackDto): Promise<Track>;
-  remove(id: string): Promise<void>;
+  remove(id: string): Promise<Track>;
 }
