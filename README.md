@@ -8,7 +8,7 @@
 ## Downloading
 
 ```
-git clone {repository URL}
+git clone https://github.com/MaksimGurbanow/nodejs2024Q1-service.git
 ```
 
 ## Installing NPM modules
@@ -17,56 +17,48 @@ git clone {repository URL}
 npm install
 ```
 
-## Running application
+## Get's started
 
 ```
-npm start
+docker:up
+```
+After create and starting the app on port (4000 as default) you can open in your browser OpenAPI documentation by typing
+> _http://localhost:4000/doc/_
+
+Also we can work with **postgresql** in manual mode through Prisma studio
+
+```bash
+npm docker:studio
 ```
 
-After starting the app on port (4000 as default) you can open
-in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
-For more information about OpenAPI/Swagger please visit https://swagger.io/.
+And open a graphical user interface (GUI) in your browser to work with databases easily
 
-## Testing
+> _http://localhost:5555_
+
+## :test_tube: Testing
 
 After application running open new terminal and enter:
 
 To run all tests without authorization
 
-```
+```bash
 npm run test
 ```
 
-To run only one of all test suites
+### :pencil2: Auto-fix and Format
 
-```
-npm run test -- <path to suite>
-```
-
-To run all test with authorization
-
-```
-npm run test:auth
-```
-
-To run only specific test suite with authorization
-
-```
-npm run test:auth -- <path to suite>
-```
-
-### Auto-fix and format
-
-```
+```bash
 npm run lint
 ```
 
-```
+```bash
 npm run format
 ```
 
-### Debugging in VSCode
+### :mag_right: Scan Docker containers
 
-Press <kbd>F5</kbd> to debug.
+You can also run a report on scanning Docker images for vulnerabilities using the docker scout tool. The report is an analysis of two Docker images: nodejs2023q2-service-app and nodejs2023q2-service-db:
 
-For more information, visit: https://code.visualstudio.com/docs/editor/debugging
+```bash
+npm docker:scan
+```
