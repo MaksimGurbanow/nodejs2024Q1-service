@@ -9,7 +9,7 @@ import { Artist } from '../interfaces/artist.interface';
 import { Track } from '../interfaces/track.interface';
 import { PrismaService } from './prisma.service';
 
-enum FavoriteType {
+export enum FavoriteType {
   Artists = 'artist',
   Albums = 'album',
   Tracks = 'track',

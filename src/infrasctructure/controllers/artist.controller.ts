@@ -25,26 +25,26 @@ export class ArtistController {
   }
 
   @Get()
-  getAll() {
-    return this.artistService.getAll();
+  async getAll() {
+    return await this.artistService.getAll();
   }
 
   @Get(':id')
-  getById(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
-    return this.artistService.getById(id);
+  async getById(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
+    return await this.artistService.getById(id);
   }
 
   @Put(':id')
-  update(
+  async update(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body() updateArtistDto: UpdateArtistDto,
   ) {
-    return this.artistService.update(id, updateArtistDto);
+    return await this.artistService.update(id, updateArtistDto);
   }
 
   @Delete(':id')
   @HttpCode(204)
-  remove(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
-    return this.artistService.remove(id);
+  async remove(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
+    return await this.artistService.remove(id);
   }
 }

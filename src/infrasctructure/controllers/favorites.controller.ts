@@ -7,31 +7,34 @@ import {
   ParseUUIDPipe,
   HttpCode,
 } from '@nestjs/common';
-import { FavoritesService } from 'src/core/services/favorites.service';
+import {
+  FavoriteType,
+  FavoritesService,
+} from 'src/core/services/favorites.service';
 
 @Controller('favs')
 export class FavoritesController {
   constructor(private readonly favoritesService: FavoritesService) {}
 
   @Post(':type/:id')
-  create(
+  async create(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
-    @Param('type') type: string,
+    @Param('type') type: FavoriteType,
   ) {
-    return this.favoritesService.create(id, type);
+    return await this.favoritesService.create(id, type);
   }
 
   @Get()
-  getAll() {
-    return this.favoritesService.getAll();
+  async getAll() {
+    return await this.favoritesService.getAll();
   }
 
   @Delete(':type/:id')
   @HttpCode(204)
-  remove(
+  async remove(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
-    @Param('type') type: string,
+    @Param('type') type: FavoriteType,
   ) {
-    return this.favoritesService.remove(id, type);
+    return await this.favoritesService.remove(id, type);
   }
 }
