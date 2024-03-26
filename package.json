@@ -8,7 +8,7 @@
   "scripts": {
     "docker:up": "docker-compose up -d",
     "docker:down": "docker-compose down",
-    "docker:scan": "docker scout cves maksimgurbanow/nodejs2024Q1-service-app:1.1 && docker scout cves maksimgurbanow/nodejs2024Q1-service-db:1.1",
+    "docker:scan": "docker scout cves maksimgurbanow/nodejs2024q1-service-main && docker scout cves maksimgurbanow/nodejs2024q1-service-db",
     "docker:push": "docker-compose build && docker-compose push",
     "start:dev:migrate": "npx prisma migrate dev && npm run start:dev",
     "prebuild": "rimraf dist",

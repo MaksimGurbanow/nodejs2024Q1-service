@@ -1,6 +1,6 @@
 services:
   db:
-    image: maksimgurbanow/nodejs2024Q1-service-db:1.1
+    image: maksimgurbanow/nodejs2024q1-service-db
     ports:
       - '$DATA_BASE_PORT:$DATA_BASE_PORT'
     container_name: 'data-base-PG'
@@ -23,7 +23,7 @@ services:
       ]
 
   app:
-    image: maksimgurbanow/nodejs2024Q1-service-app:1.1
+    image: maksimgurbanow/nodejs2024q1-service-main
     container_name: 'app'
     ports:
       - '$PORT:$PORT'
