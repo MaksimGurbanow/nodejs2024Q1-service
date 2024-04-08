@@ -2,16 +2,12 @@ import { ForbiddenException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { compare } from 'bcrypt';
+
+import { User } from '@prisma/client';
 import { UpdateAuthDto } from 'src/auth/dto/updateAuth';
 import { CreateUserDto } from '../repositories/user/dto/interface';
 import { PrismaService } from './prisma.service';
 import { UserService } from './user.service';
-
-export interface User {
-  id: string;
-  login: string;
-  password: string;
-}
 
 @Injectable()
 export class AuthService {
@@ -51,7 +47,7 @@ export class AuthService {
     });
     if (!userToken) throw new ForbiddenException('Invalid refresh token');
 
-    const createUser = await this.userService.findOneUser(userToken.userId);
+    const createUser = await this.userService.getById(userToken.userId);
     await this.prisma.token.delete({ where: { userId: createUser.id } });
 
     const tokens = await this.signTokens(createUser.id, createUser.login);
