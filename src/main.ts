@@ -1,17 +1,26 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { setupSwagger } from './swaggerConfig';
 import { ValidationPipe } from '@nestjs/common';
+import 'dotenv/config';
+
+const defaultPort = 4000;
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  app.useGlobalPipes(new ValidationPipe());
-  const PORT = process.env.PORT || 4000;
-
-  await setupSwagger(app);
-
-  await app.listen(PORT, () => {
-    console.log(`Server is listening on PORT ${PORT}`);
+  const app = await NestFactory.create(AppModule, {
+    cors: true,
+    bufferLogs: true,
   });
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  );
+
+  const PORT = process.env.PORT || defaultPort;
+  await app.listen(PORT);
 }
+
 bootstrap();

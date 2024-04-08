@@ -1,18 +1,41 @@
-import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
-import { UserRepository } from '../repositories/user/user.repository';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { Prisma } from '@prisma/client';
+import { ConfigService } from '@nestjs/config';
+import { UserEntity } from '../entities/user.entity';
 import {
   CreateUserDto,
   UpdatePasswordDto,
 } from '../repositories/user/dto/interface';
-import { UserEntity } from '../entities/user.entity';
 import { PrismaService } from './prisma.service';
-import { Prisma } from '@prisma/client';
+import * as bcrypt from 'bcryptjs';
+
 @Injectable()
-export class UserService implements UserRepository {
-  constructor(private readonly prisma: PrismaService) {}
+export class UserService {
+  constructor(
+    private prisma: PrismaService,
+    private configService: ConfigService,
+  ) {}
+
+  async create(createUserDto: CreateUserDto) {
+    const password = await this.hashPassword(createUserDto.password);
+    const user = await this.prisma.user.create({
+      data: {
+        ...createUserDto,
+        password,
+      },
+    });
+    return new UserEntity(user);
+  }
 
   async getAll() {
-    return (await this.prisma.user.findMany()).map((v) => new UserEntity(v));
+    const allPrismaUsers = await this.prisma.user.findMany();
+    const allUsers = allPrismaUsers.map((user) => new UserEntity(user));
+    return allUsers;
   }
 
   async getById(id: string) {
@@ -25,28 +48,29 @@ export class UserService implements UserRepository {
     return new UserEntity(currentUser);
   }
 
-  async create(dto: CreateUserDto) {
-    const user = await this.prisma.user.create({ data: dto });
-    return new UserEntity(user);
-  }
-
-  async update(id: string, dto: UpdatePasswordDto) {
-    const currentUser = await this.prisma.user.findUnique({
-      where: { id },
-    });
+  async update(id: string, updateUserDto: UpdatePasswordDto) {
+    const currentUser = await this.prisma.user.findUnique({ where: { id } });
 
     if (!currentUser) {
       throw new NotFoundException(`User with id ${id} not found`);
     }
 
-    if (currentUser.password !== dto.oldPassword) {
-      throw new HttpException('Old password does not match', 403);
+    const passwordMatch = await bcrypt.compare(
+      updateUserDto.oldPassword,
+      currentUser.password,
+    );
+    if (!passwordMatch) {
+      throw new HttpException(
+        'Old password does not match',
+        HttpStatus.FORBIDDEN,
+      );
     }
 
+    const hashedPassword = await this.hashPassword(updateUserDto.newPassword);
     const updatedUser = await this.prisma.user.update({
       where: { id },
       data: {
-        password: dto.newPassword,
+        password: hashedPassword,
         version: { increment: 1 },
       },
     });
@@ -59,7 +83,7 @@ export class UserService implements UserRepository {
       const deleteUser = await this.prisma.user.delete({
         where: { id },
       });
-      return new UserEntity(deleteUser);
+      return deleteUser;
     } catch (error) {
       if (
         error instanceof Prisma.PrismaClientKnownRequestError &&
@@ -69,5 +93,10 @@ export class UserService implements UserRepository {
       }
       throw error;
     }
+  }
+
+  private async hashPassword(password: string): Promise<string> {
+    const salt = await bcrypt.genSalt(parseInt(process.env.CRYPT_SALT));
+    return await bcrypt.hash(password, salt);
   }
 }
