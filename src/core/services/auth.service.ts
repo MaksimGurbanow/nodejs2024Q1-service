@@ -8,7 +8,7 @@ import { CreateUserDto } from '../repositories/user/dto/interface';
 import { PrismaService } from './prisma.service';
 import { UserService } from './user.service';
 
-interface User {
+export interface User {
   id: string;
   login: string;
   password: string;
