@@ -3,11 +3,16 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { compare } from 'bcrypt';
 
-import { User } from '@prisma/client';
 import { UpdateAuthDto } from 'src/auth/dto/updateAuth';
 import { CreateUserDto } from '../repositories/user/dto/interface';
 import { PrismaService } from './prisma.service';
 import { UserService } from './user.service';
+
+interface User {
+  id: string;
+  login: string;
+  password: string;
+}
 
 @Injectable()
 export class AuthService {
