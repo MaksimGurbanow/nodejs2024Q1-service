@@ -39,6 +39,9 @@ services:
       - .env
     volumes:
       - ./src:/user/app/src
+    build:
+      context: .
+      dockerfile: Dockerfile
 
 volumes:
   db_storage_data:
@@ -47,4 +50,3 @@ volumes:
 networks:
   internal:
     driver: bridge
-    name: 'internal'
